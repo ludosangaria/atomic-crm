@@ -150,35 +150,37 @@ const dataProviderWithCustomMethods = {
     return data;
   },
   async salesUpdate(
-    id: Identifier,
-    data: Partial<Omit<SalesFormData, "password">>,
-  ) {
-    const { email, first_name, last_name, administrator, avatar, disabled } =
-      data;
+  id: Identifier,
+  data: Partial<Omit<SalesFormData, "password">>,
+) {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-    const { data: sale, error } = await supabase.functions.invoke<Sale>(
-      "users",
-      {
-        method: "PATCH",
-        body: {
-          sales_id: id,
-          email,
-          first_name,
-          last_name,
-          administrator,
-          disabled,
-          avatar,
-        },
+  const accessToken = session?.access_token;
+
+  const { data: sale, error } = await supabase.functions.invoke<Sale>(
+    "users",
+    {
+      method: "PATCH",
+      body: {
+        sales_id: id,
+        ...data,
       },
-    );
+      headers: accessToken
+        ? { Authorization: `Bearer ${accessToken}` }
+        : undefined,
+    },
+  );
 
-    if (!sale || error) {
-      console.error("salesCreate.error", error);
-      throw new Error("Failed to update account manager");
-    }
+  if (!sale || error) {
+    console.error("salesCreate.error", error);
+    throw new Error("Failed to update account manager");
+  }
 
-    return data;
-  },
+  return sale;
+},
+
   async updatePassword(id: Identifier) {
     const { data: passwordUpdated, error } =
       await supabase.functions.invoke<boolean>("updatePassword", {

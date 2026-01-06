@@ -129,10 +129,18 @@ const dataProviderWithCustomMethods = {
     };
   },
   async salesCreate(body: SalesFormData) {
+     const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  const accessToken = session?.access_token;
     const { data, error } = await supabase.functions.invoke<Sale>("users", {
       method: "POST",
       body,
-    });
+      headers: accessToken
+      ? { Authorization: `Bearer ${accessToken}` }
+      : undefined,
+  });
 
     if (!data || error) {
       console.error("salesCreate.error", error);

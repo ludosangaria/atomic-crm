@@ -3,6 +3,36 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 import { supabaseAdmin } from "../_shared/supabaseAdmin.ts";
 import { corsHeaders, createErrorResponse } from "../_shared/utils.ts";
 
+###############
+const authHeader = req.headers.get("Authorization")!;
+console.log("1. authHeader:", authHeader ? "present" : "missing");
+
+const localClient = createClient(
+  Deno.env.get("SUPABASE_URL") ?? "",
+  Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+  { global: { headers: { Authorization: authHeader } } },
+);
+
+const { data, error } = await localClient.auth.getUser();
+console.log("2. getUser:", { userId: data?.user?.id, error: error?.message });
+
+if (!data?.user) {
+  return createErrorResponse(401, "Unauthorized - getUser failed");
+}
+
+const currentUserSale = await supabaseAdmin
+  .from("sales")
+  .select("*")
+  .eq("user_id", data.user.id)
+  .single();
+
+console.log("3. currentUserSale:", { saleId: currentUserSale?.data?.id, error: currentUserSale?.error?.message });
+
+if (!currentUserSale?.data) {
+  return createErrorResponse(401, "Unauthorized - no sale found");
+}
+###############
+
 async function updateSaleDisabled(user_id: string, disabled: boolean) {
   return await supabaseAdmin
     .from("sales")

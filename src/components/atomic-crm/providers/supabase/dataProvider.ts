@@ -249,7 +249,7 @@ export const dataProvider = withLifecycleCallbacks(
   dataProviderWithCustomMethods,
   [
     {
-      resource: "contactNotes",
+      resource: "contact_notes",
       beforeSave: async (data: ContactNote, _, __) => {
         if (data.attachments) {
           for (const fi of data.attachments) {
@@ -260,7 +260,7 @@ export const dataProvider = withLifecycleCallbacks(
       },
     },
     {
-      resource: "dealNotes",
+      resource: "deal_notes",
       beforeSave: async (data: DealNote, _, __) => {
         if (data.attachments) {
           for (const fi of data.attachments) {
@@ -308,7 +308,7 @@ export const dataProvider = withLifecycleCallbacks(
           "website",
           "zipcode",
           "city",
-          "stateAbbr",
+          "state_abbr",
         ])(params);
       },
       beforeCreate: async (params) => {

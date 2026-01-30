@@ -84,7 +84,11 @@ const NoteCreateButton = ({
     refetch();
     update(reference, {
       id: (record && record.id) as unknown as Identifier,
-      data: { last_seen: new Date().toISOString(), status: data.status },
+      data: {
+        last_seen:
+          reference === "contacts" ? new Date().toISOString() : undefined,
+        status: data.status,
+      },
       previousData: record,
     });
     notify("Note added");
@@ -99,7 +103,7 @@ const NoteCreateButton = ({
           ...data,
           [foreignKeyMapping[reference]]: record.id,
           sales_id: identity.id,
-          date: data.date || getCurrentDate(),
+          date: new Date(data.date || getCurrentDate()).toISOString(),
         })}
         mutationOptions={{
           onSuccess: handleSuccess,

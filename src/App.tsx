@@ -31,7 +31,7 @@ const App = () => (
             { value: 'male', label: 'He' },
             { value: 'female', label: 'She' },
         ]}
-        companySectors={['Partenaire', 'Client Final', 'Fournisseur', 'Autres"]}
+        companySectors={['Partenaire', 'Client Final', 'Fournisseur', 'Autres']}
         dealCategories={['HIT', 'Réseaux','Sécurité','Cross BU']}
         dealPipelineStatuses={['won']}
         dealStages={[

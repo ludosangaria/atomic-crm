@@ -27,6 +27,7 @@ import { CRM } from "@/components/atomic-crm/root/CRM";
  */
 const App = () => (
     <CRM
+        title="Road to 100M€"
         contactGender={[
             { value: 'male', label: 'He' },
             { value: 'female', label: 'She' },
